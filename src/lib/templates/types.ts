@@ -115,7 +115,9 @@ export type TemplateCategory =
   | "transport"
   | "umowy"
   | "finanse"
-  | "mieszkanie";
+  | "mieszkanie"
+  | "praca"
+  | "dane-osobowe";
 
 export interface Party {
   name: string;

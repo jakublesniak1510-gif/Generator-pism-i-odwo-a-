@@ -95,3 +95,33 @@ export function recipientQuestions(label = "Dane adresata"): Question[] {
     { id: "recipient_city", label: "Miejscowość", type: "text", placeholder: "Warszawa" },
   ];
 }
+
+/** Pierwsza litera wielka, kropka na końcu (do zdań budowanych z odpowiedzi użytkownika). */
+export function sentence(text: string): string {
+  const t = text.trim().replace(/[ \t]+/g, " ");
+  if (!t) return t;
+  const capital = t.charAt(0).toUpperCase() + t.slice(1);
+  return /[.!?…:]$/.test(capital) ? capital : `${capital}.`;
+}
+
+/** Usuwa podwójne kropki i spacje, spacje przed interpunkcją. */
+export function tidy(text: string): string {
+  return text
+    .replace(/\.{2,}/g, (m) => (m.length === 2 ? "." : m))
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/ +([,.;:])/g, "$1")
+    .trim();
+}
+
+export function tidyParagraph(par: Paragraph): Paragraph {
+  if (par.type === "list") return { type: "list", items: par.items.map(tidy) };
+  return { ...par, text: tidy(par.text) };
+}
+
+/** Opis użytkownika (textarea) -> lista zdań/akapitów z poprawioną wielką literą i kropką. */
+export function userParagraphs(text: string): string[] {
+  return text
+    .split(/\n+/)
+    .map((t) => sentence(t))
+    .filter(Boolean);
+}

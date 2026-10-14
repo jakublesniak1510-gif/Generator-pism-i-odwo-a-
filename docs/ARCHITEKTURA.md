@@ -44,3 +44,27 @@ DOCUMENT_TOKEN_SECRET=change-me
 
 ## Ceny (grosze)
 Pojedyncze pismo 2499 (domyślnie w szablonach), pakiet 5 pism 5900 (etap 2), sprawdzenie przez prawnika 12900 (etap 2 – partner).
+
+---
+
+## Fala 2 (rozszerzenia)
+
+Nowe endpointy i typy odpowiedzi są opisane w `src/lib/api-types.ts` (sekcja „FALA 2”). Skrót:
+
+| Endpoint | Cel |
+|---|---|
+| `GET /api/capabilities` | które funkcje są skonfigurowane (AI prefill, e-mail, tryb płatności) |
+| `POST /api/prefill` | wypełnienie formularza ze zdjęcia / PDF / wklejonego tekstu dokumentu (Claude vision + structured output); AI wyodrębnia WYŁĄCZNIE dane widoczne w dokumencie |
+| `PATCH /api/documents/[id]` | edycja akapitów opłaconego pisma w przeglądarce; eksport z wersji po edycji |
+| `POST /api/documents/[id]/redeem` | odblokowanie kodem (pakiet 5 pism, kody promocyjne, kody partnerskie) |
+| `POST /api/packages/checkout`, `GET /api/packages/session` | zakup pakietu 5 pism → kod |
+| `POST /api/documents/[id]/email` | wysyłka linku do pisma na e-mail (Resend, opcjonalne) |
+| `POST /api/cron/cleanup` | retencja: usuwanie pism po 90 dniach (RODO) |
+
+Nowe tabele SQLite: `codes(code PK, kind 'package'|'promo', uses_total, uses_left, created_at, stripe_session_id, email)`, kolumny w `documents`: `edited_at`, `paid_via` ('stripe'|'dev'|'code:<code>').
+
+Nowe strony: `/poradniki` + `/poradniki/[slug]` (baza wiedzy), `/pakiet/sukces`, `opengraph-image` dla pism.
+
+Nowe kategorie szablonów: `praca`, `dane-osobowe`. Helpery `sentence`, `tidy`, `tidyParagraph`, `userParagraphs` są teraz w `helpers.ts` – nie kopiować ich do szablonów.
+
+Testy: `npm test` (vitest) – `src/**/*.test.ts`. Konfiguracja aliasu `@/` w `vitest.config.ts`.

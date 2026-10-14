@@ -24,6 +24,9 @@ const PATHS: Record<string, string> = {
   building: "M5 21V4h14v17M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2M3 21h18",
   cart: "M3 4h2l2.4 11h10.2L20 8H6.2M9 20h.01M17 20h.01",
   shield: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
+  briefcase: "M3 8h18v12H3zM9 8V5h6v3M3 13h18",
+  bank: "M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 18h18M3 21h18",
+  gavel: "M14 4l6 6-2 2-6-6zM8 10l6 6-5 5-6-6zM3 21h8",
 };
 
 const CATEGORY_ICON: Record<TemplateCategory, string> = {
@@ -32,6 +35,8 @@ const CATEGORY_ICON: Record<TemplateCategory, string> = {
   umowy: "contract",
   finanse: "money",
   mieszkanie: "home",
+  praca: "briefcase",
+  "dane-osobowe": "shield",
 };
 
 export function TemplateIcon({
