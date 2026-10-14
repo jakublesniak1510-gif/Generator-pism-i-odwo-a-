@@ -4,6 +4,7 @@ import { Logo } from "./Logo";
 
 const SERVICE_LINKS = [
   { href: "/jak-to-dziala", label: "Jak to działa" },
+  { href: "/poradniki", label: "Poradniki" },
   { href: "/cennik", label: "Cennik" },
   { href: "/kontakt", label: "Kontakt" },
 ];

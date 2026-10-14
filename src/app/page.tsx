@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Faq } from "@/components/Faq";
+import { GuideCard } from "@/components/GuideCard";
 import { GENERAL_FAQ, HowItWorksSteps, PricingCards, TrustGrid } from "@/components/marketing";
 import { PRICES, SITE_NAME, absoluteUrl, formatPrice } from "@/components/site";
 import { TemplateCard } from "@/components/TemplateCard";
 import { CheckIcon, Container, SectionHeading } from "@/components/ui";
+import { getAllGuides } from "@/content/poradniki";
 import { CATEGORY_LABELS, getAllTemplates } from "@/lib/templates";
 import type { LetterTemplate, TemplateCategory } from "@/lib/templates/types";
 
@@ -217,6 +219,32 @@ export default function HomePage() {
               Zobacz pełny cennik
             </Link>
           </p>
+        </Container>
+      </section>
+
+      {/* PORADNIKI */}
+      <section aria-labelledby="poradniki-heading" className="border-t border-navy-100 py-14 sm:py-20">
+        <Container>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeading
+              id="poradniki-heading"
+              eyebrow="Poradniki"
+              title="Zanim wyślesz pismo"
+              lead="Jak liczyć terminy, jak wysłać list za potwierdzeniem odbioru i co robić, gdy firma odmawia."
+            />
+            <Link href="/poradniki" className="text-sm font-medium text-navy-700 underline underline-offset-2 hover:text-navy-900">
+              Wszystkie poradniki
+            </Link>
+          </div>
+          <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {getAllGuides()
+              .slice(0, 3)
+              .map((g) => (
+                <li key={g.slug}>
+                  <GuideCard guide={g} />
+                </li>
+              ))}
+          </ul>
         </Container>
       </section>
 

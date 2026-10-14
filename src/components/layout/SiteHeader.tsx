@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 
-const NAV = [
+/** `className` – ukrywanie pozycji na wąskich ekranach (4 pozycje nie mieszczą się obok logo przy 375 px). */
+const NAV: { href: string; label: string; className?: string }[] = [
   { href: "/#pisma", label: "Pisma" },
-  { href: "/jak-to-dziala", label: "Jak to działa" },
-  { href: "/cennik", label: "Cennik" },
+  { href: "/poradniki", label: "Poradniki" },
+  { href: "/jak-to-dziala", label: "Jak to działa", className: "hidden md:block" },
+  { href: "/cennik", label: "Cennik", className: "hidden min-[400px]:block" },
 ];
 
 export function SiteHeader() {
@@ -21,12 +23,12 @@ export function SiteHeader() {
           <Logo />
         </Link>
         <nav aria-label="Główna nawigacja">
-          <ul className="flex items-center gap-1 text-sm font-medium text-navy-800 sm:gap-2">
+          <ul className="flex items-center gap-0.5 text-sm font-medium text-navy-800 sm:gap-2">
             {NAV.map((item) => (
-              <li key={item.href} className={item.href === "/jak-to-dziala" ? "hidden sm:block" : undefined}>
+              <li key={item.href} className={item.className}>
                 <Link
                   href={item.href}
-                  className="rounded-md px-2 py-2 transition-colors hover:bg-navy-50 hover:text-navy-950 sm:px-3"
+                  className="rounded-md px-1.5 py-2 transition-colors hover:bg-navy-50 hover:text-navy-950 sm:px-3"
                 >
                   {item.label}
                 </Link>

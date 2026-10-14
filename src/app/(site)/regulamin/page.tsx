@@ -44,6 +44,9 @@ Do korzystania z Serwisu potrzebne są: urządzenie z dostępem do internetu, ak
 2. Umowa o dostarczenie Pisma zostaje zawarta z chwilą opłacenia zamówienia. Cena podana jest przy każdym Szablonie i jest ceną brutto ([INFORMACJA O VAT]).
 3. Płatności obsługuje zewnętrzny operator płatności (Stripe). Dostępne metody płatności są prezentowane przed dokonaniem płatności.
 4. Po zaksięgowaniu płatności Pismo jest dostępne natychmiast pod unikalnym linkiem. Użytkownik powinien zachować ten link – stanowi on jedyny sposób dostępu do Pisma.
+5. **Pakiet 5 Pism** – po opłaceniu pakietu Użytkownik otrzymuje kod, który można wykorzystać 5 razy; każde użycie odblokowuje jedno Pismo bez dodatkowej płatności. [OKRES WAŻNOŚCI KODU]. [DO WERYFIKACJI PRZEZ PRAWNIKA – prawo odstąpienia w zakresie niewykorzystanych użyć kodu].
+6. Kody promocyjne działają na zasadach określonych przy ich udostępnieniu. Użycie kodu wymaga tej samej zgody co płatność (§ 6 ust. 2).
+7. Po odblokowaniu Pisma Użytkownik może edytować jego treść w przeglądarce. Za treść wprowadzoną lub zmienioną przez Użytkownika odpowiada Użytkownik.
 
 ## § 6. Prawo odstąpienia od umowy
 

@@ -5,12 +5,14 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Faq } from "@/components/Faq";
 import { pluralPl } from "@/components/format-pl";
 import { LetterWizard } from "@/components/generator/LetterWizard";
+import { GuideCard } from "@/components/GuideCard";
 import { LegalBasisList } from "@/components/LegalBasisList";
 import { Markdown } from "@/components/Markdown";
 import { SITE_NAME, absoluteUrl, formatPrice } from "@/components/site";
 import { TemplateCard } from "@/components/TemplateCard";
 import { TemplateIcon } from "@/components/TemplateIcon";
 import { CheckIcon, Container } from "@/components/ui";
+import { getGuidesForTemplate } from "@/content/poradniki";
 import { getAllTemplates, getTemplate } from "@/lib/templates";
 import type { DeadlineRule, LetterTemplate } from "@/lib/templates/types";
 
@@ -70,6 +72,7 @@ export default async function TemplatePage({ params }: { params: Promise<Params>
   const price = formatPrice(t.priceGrosze);
   const h1 = t.seo.h1 || t.name;
   const related = relatedTemplates(t);
+  const guides = getGuidesForTemplate(t.slug).slice(0, 3);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -114,6 +117,14 @@ export default async function TemplatePage({ params }: { params: Promise<Params>
                 </span>
               </div>
               <h1 className="mt-4 text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">{h1}</h1>
+              <ul aria-label="Co zyskujesz" className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-navy-800">
+                {["Podgląd za darmo", "Bez konta", "DOCX + PDF", "Instrukcja wysyłki"].map((item) => (
+                  <li key={item} className="flex items-center gap-1.5">
+                    <CheckIcon className="h-4 w-4 text-accent-600" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
               {t.seo.intro ? (
                 <div className="mt-4 max-w-2xl text-lg">
                   <Markdown className="text-lg text-gray-700">{t.seo.intro}</Markdown>
@@ -237,6 +248,22 @@ export default async function TemplatePage({ params }: { params: Promise<Params>
             <div className="mt-4">
               <Faq items={t.seo.faq} />
             </div>
+          </section>
+        ) : null}
+
+        {/* Poradniki powiązane z pismem */}
+        {guides.length ? (
+          <section aria-labelledby="przeczytaj-tez">
+            <h2 id="przeczytaj-tez" className="text-2xl font-bold tracking-tight text-navy-900">
+              Przeczytaj też
+            </h2>
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+              {guides.map((g) => (
+                <li key={g.slug}>
+                  <GuideCard guide={g} />
+                </li>
+              ))}
+            </ul>
           </section>
         ) : null}
 

@@ -32,10 +32,12 @@ interface Props {
   value: string | boolean | undefined;
   error?: string;
   disabled?: boolean;
+  /** pole wypełnione automatycznie z dokumentu – podświetlone do czasu edycji */
+  prefilled?: boolean;
   onChange: (value: string | boolean) => void;
 }
 
-export function QuestionField({ question: q, value, error, disabled, onChange }: Props) {
+export function QuestionField({ question: q, value, error, disabled, prefilled = false, onChange }: Props) {
   const id = fieldDomId(q.id);
   const helpId = q.help ? `${id}-pomoc` : undefined;
   const errorId = error ? `${id}-blad` : undefined;
@@ -54,8 +56,20 @@ export function QuestionField({ question: q, value, error, disabled, onChange }:
       ) : q.type === "checkbox" ? null : (
         <span className="ml-1.5 text-sm font-normal text-gray-500">(opcjonalnie)</span>
       )}
+      {prefilled ? (
+        <span className="ml-2 inline-block rounded bg-accent-100 px-1.5 py-0.5 align-middle text-xs font-semibold text-accent-800">
+          z dokumentu
+        </span>
+      ) : null}
     </>
   );
+
+  const wrap = (node: React.ReactNode) =>
+    prefilled ? (
+      <div className="-mx-3 rounded-lg bg-accent-50/80 px-3 py-3 ring-1 ring-accent-200">{node}</div>
+    ) : (
+      node
+    );
 
   const help = q.help ? (
     <p id={helpId} className="mt-1.5 text-sm leading-relaxed text-gray-500">
@@ -87,7 +101,7 @@ export function QuestionField({ question: q, value, error, disabled, onChange }:
 
   /* ---------- radio: karty ---------- */
   if (q.type === "radio") {
-    return (
+    return wrap(
       <fieldset aria-describedby={describedBy} aria-invalid={error ? true : undefined}>
         <legend id={id} tabIndex={-1} className="text-sm font-semibold text-navy-900 focus:outline-none">
           {labelContent}
@@ -131,7 +145,7 @@ export function QuestionField({ question: q, value, error, disabled, onChange }:
 
   /* ---------- checkbox ---------- */
   if (q.type === "checkbox") {
-    return (
+    return wrap(
       <div>
         <label
           htmlFor={id}
@@ -297,7 +311,7 @@ export function QuestionField({ question: q, value, error, disabled, onChange }:
       );
   }
 
-  return (
+  return wrap(
     <div>
       <label htmlFor={id} className="block text-sm font-semibold text-navy-900">
         {labelContent}

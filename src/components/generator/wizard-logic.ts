@@ -232,3 +232,94 @@ export function clearStoredState(slug: string): void {
     /* ignorujemy */
   }
 }
+
+/* ===================== Wypełnianie z dokumentu (POST /api/prefill) ===================== */
+
+export interface PrefillMergeResult {
+  values: FormValues;
+  /** id pól, które wypełniliśmy */
+  filled: string[];
+  /** id pól pominiętych, bo użytkownik już je wypełnił */
+  skippedFilledByUser: string[];
+}
+
+const DMY_RE = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/;
+
+function toDateValue(raw: string): string | null {
+  const s = raw.trim();
+  if (DATE_RE.test(s)) return Number.isNaN(new Date(s).getTime()) ? null : s;
+  const m = DMY_RE.exec(s);
+  if (!m) return null;
+  const iso = `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+  return Number.isNaN(new Date(iso).getTime()) ? null : iso;
+}
+
+function toNumberValue(raw: string | number, money: boolean): string | null {
+  const n = typeof raw === "number" ? raw : parseDecimal(raw);
+  if (!Number.isFinite(n)) return null;
+  // w formularzu kwoty wpisuje się po polsku: „149,99”
+  const fixed = money ? n.toFixed(2) : String(n);
+  return fixed.replace(".", ",");
+}
+
+/** Zamienia wartość z API na wartość pola formularza; null = nie da się jej użyć. */
+function convertPrefillValue(q: Question, raw: string | number | boolean): string | boolean | null {
+  if (q.type === "checkbox") {
+    if (raw === true || raw === "true" || raw === "tak") return true;
+    return null;
+  }
+  if (typeof raw === "boolean") return null;
+  const str = String(raw).trim();
+  if (!str) return null;
+  switch (q.type) {
+    case "select":
+    case "radio": {
+      const opts = q.options ?? [];
+      const byValue = opts.find((o) => o.value === str);
+      if (byValue) return byValue.value;
+      const byLabel = opts.find((o) => o.label.trim().toLowerCase() === str.toLowerCase());
+      return byLabel ? byLabel.value : null;
+    }
+    case "date":
+      return toDateValue(str);
+    case "number":
+    case "money":
+      return toNumberValue(typeof raw === "number" ? raw : str, q.type === "money");
+    default: {
+      const max = maxLengthOf(q);
+      return max !== undefined ? str.slice(0, max) : str;
+    }
+  }
+}
+
+/**
+ * Łączy odpowiedzi odczytane z dokumentu z bieżącym stanem kreatora.
+ * Nie nadpisuje pól, które użytkownik już wypełnił. Pomija checkboxy wymagane
+ * (oświadczenia i zgody) – te użytkownik musi zaznaczyć sam.
+ */
+export function mergePrefill(
+  sections: QuestionSection[],
+  current: FormValues,
+  answers: Record<string, string | number | boolean>,
+): PrefillMergeResult {
+  const all = indexQuestions(sections);
+  const values: FormValues = { ...current };
+  const filled: string[] = [];
+  const skippedFilledByUser: string[] = [];
+  for (const [id, raw] of Object.entries(answers)) {
+    const q = all.get(id);
+    if (!q) continue;
+    if (q.type === "checkbox" && q.required === true) continue;
+    const converted = convertPrefillValue(q, raw);
+    if (converted === null) continue;
+    const existing = current[id];
+    const userFilled = q.type === "checkbox" ? existing !== undefined : !isEmpty(existing);
+    if (userFilled) {
+      if (existing !== converted) skippedFilledByUser.push(id);
+      continue;
+    }
+    values[id] = converted;
+    filled.push(id);
+  }
+  return { values, filled, skippedFilledByUser };
+}

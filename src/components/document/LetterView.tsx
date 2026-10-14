@@ -78,7 +78,7 @@ export function LetterView({ document: doc, locked = false, lockedOverlay }: Pro
       </div>
 
       {locked ? (
-        <div className="relative mt-2 min-h-80">
+        <div className="relative mt-2 min-h-[27rem]">
           <div aria-hidden="true" className="select-none space-y-2.5 py-2 blur-[3px]">
             {FAKE_LINES.map((w, i) => (
               <div

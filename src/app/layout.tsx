@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SITE_NAME, SITE_URL } from "@/components/site";
@@ -27,6 +28,9 @@ export const viewport: Viewport = {
   themeColor: "#1e3a5f",
 };
 
+/** Opcjonalna analityka Plausible (bez cookies) – tylko gdy ustawiono domenę w env. */
+const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN?.trim();
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" className="h-full antialiased">
@@ -36,6 +40,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <SiteFooter />
+        {PLAUSIBLE_DOMAIN ? (
+          <Script
+            defer
+            data-domain={PLAUSIBLE_DOMAIN}
+            src="https://plausible.io/js/script.js"
+            strategy="afterInteractive"
+          />
+        ) : null}
       </body>
     </html>
   );

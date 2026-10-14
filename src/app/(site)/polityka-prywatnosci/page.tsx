@@ -19,6 +19,8 @@ Administratorem Twoich danych osobowych jest [DANE FIRMY – nazwa, adres siedzi
 ## 2. Jakie dane przetwarzamy
 
 - **Dane z kwestionariusza** – informacje potrzebne do przygotowania pisma, np. imię i nazwisko, adres, dane kontaktowe, dane adresata, numery umów, rezerwacji lub wezwań, daty i kwoty, opis sytuacji.
+- **Dokumenty wgrane do wypełnienia formularza** (opcjonalnie) – zdjęcie, plik PDF lub wklejony tekst (np. wezwanie, umowa, paragon). Służą wyłącznie do odczytania danych potrzebnych w formularzu i nie są zapisywane po odczycie.
+- **Adres e-mail** (opcjonalnie) – gdy poprosisz o wysłanie linku do pisma albo kodu pakietu na e-mail.
 - **Dane dotyczące płatności** – identyfikator transakcji i jej status. Danych karty płatniczej nie przetwarzamy – obsługuje je operator płatności.
 - **Dane techniczne** – adres IP, informacje o przeglądarce, logi serwera (w celach bezpieczeństwa i ochrony przed nadużyciami).
 
@@ -33,17 +35,18 @@ Prosimy, nie wpisuj do kwestionariusza danych, które nie są potrzebne do pisma
 
 ## 4. Jak długo przechowujemy dane
 
-- Treść pisma i odpowiedzi z kwestionariusza przechowujemy przez **[X] dni** od wygenerowania pisma – w tym czasie możesz ponownie pobrać dokument. Po tym okresie są usuwane.
+- Treść pisma (także po Twojej edycji) i odpowiedzi z kwestionariusza przechowujemy przez **90 dni** od wygenerowania pisma – w tym czasie możesz ponownie pobrać dokument. Po tym okresie są usuwane.
 - Dane dotyczące płatności przechowujemy przez okres wymagany przepisami podatkowymi i rachunkowymi ([5 lat] od końca roku podatkowego).
 - Logi techniczne przechowujemy przez [X] dni.
 
-Odpowiedzi wpisywane w kwestionariuszu są też tymczasowo zapisywane w pamięci Twojej przeglądarki (sessionStorage), aby odświeżenie strony nie kasowało formularza. Znikają po zamknięciu karty.
+Odpowiedzi wpisywane w kwestionariuszu są też tymczasowo zapisywane w pamięci Twojej przeglądarki (sessionStorage), aby odświeżenie strony nie kasowało formularza. Znikają po zamknięciu karty. Kod pakietu 5 pism zapamiętujemy w pamięci przeglądarki (localStorage), aby podpowiedzieć go przy kolejnym piśmie – możesz go usunąć, czyszcząc dane strony w przeglądarce.
 
 ## 5. Komu przekazujemy dane (podwykonawcy)
 
 Korzystamy z usług podmiotów przetwarzających dane w naszym imieniu, na podstawie umów powierzenia:
 
-- **Anthropic PBC** (USA) – redakcja tekstu opisu sytuacji z użyciem modelu AI. Przekazujemy wyłącznie odpowiedzi potrzebne do zredagowania opisu faktów. [PODSTAWA TRANSFERU POZA EOG – np. standardowe klauzule umowne / EU-US Data Privacy Framework].
+- **Anthropic PBC** (USA) – redakcja tekstu opisu sytuacji z użyciem modelu AI oraz – jeśli z tej funkcji skorzystasz – odczytanie danych z wgranego dokumentu w celu wypełnienia formularza. Przekazujemy wyłącznie odpowiedzi potrzebne do zredagowania opisu faktów albo wgrany dokument. [PODSTAWA TRANSFERU POZA EOG – np. standardowe klauzule umowne / EU-US Data Privacy Framework].
+- **[DOSTAWCA WYSYŁKI E-MAIL – np. Resend]** – wysyłka linku do pisma lub kodu pakietu na podany adres e-mail.
 - **Stripe** – obsługa płatności. Stripe przetwarza dane płatnicze jako niezależny administrator zgodnie z własną polityką prywatności.
 - **[DOSTAWCA HOSTINGU]** – utrzymanie serwerów i bazy danych ([LOKALIZACJA SERWERÓW]).
 
@@ -69,7 +72,7 @@ Podanie danych jest dobrowolne, ale niezbędne do przygotowania pisma – bez ni
 
 ## 8. Pliki cookies
 
-Serwis używa wyłącznie niezbędnych mechanizmów technicznych. [JEŚLI ZOSTANĄ DODANE NARZĘDZIA ANALITYCZNE – OPISAĆ TUTAJ I DODAĆ BANER ZGÓD].
+Serwis używa wyłącznie niezbędnych mechanizmów technicznych. Jeśli włączona jest analityka, korzystamy z narzędzia **Plausible Analytics**, które nie używa plików cookies i zbiera wyłącznie zagregowane, anonimowe statystyki odwiedzin. [DO WERYFIKACJI PRZEZ PRAWNIKA – czy wymagany jest baner zgód].
 
 ## 9. Zautomatyzowane decyzje
 

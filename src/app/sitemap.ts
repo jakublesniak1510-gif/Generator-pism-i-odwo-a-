@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { STATIC_PAGES, absoluteUrl } from "@/components/site";
+import { getAllGuides } from "@/content/poradniki";
 import { getAllTemplates } from "@/lib/templates";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,6 +12,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.9,
+    })),
+    { url: absoluteUrl("/poradniki"), lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    ...getAllGuides().map((g) => ({
+      url: absoluteUrl(`/poradniki/${g.slug}`),
+      lastModified: new Date(`${g.updatedAt}T00:00:00Z`),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     ...STATIC_PAGES.map((p) => ({
       url: absoluteUrl(p.path),

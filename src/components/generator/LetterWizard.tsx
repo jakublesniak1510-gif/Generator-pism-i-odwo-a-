@@ -2,9 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import type { ApiError, CreateDocumentResponse } from "@/lib/api-types";
+import type { ApiError, CreateDocumentResponse, PrefillResponse } from "@/lib/api-types";
 import type { QuestionSection } from "@/lib/templates/types";
+import { useCapabilities } from "../api-client";
 import { formatPrice } from "../site";
+import { CheckIcon } from "../ui";
+import { type PrefillApplyResult, PrefillPanel } from "./PrefillPanel";
 import { QuestionField, fieldDomId } from "./QuestionField";
 import {
   type FormValues,
@@ -12,6 +15,7 @@ import {
   indexQuestions,
   isVisible,
   loadStoredState,
+  mergePrefill,
   saveStoredState,
   serializeAnswers,
   validateSection,
@@ -76,6 +80,15 @@ function WizardInner({
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<SubmitError>(null);
   const [loadingMsg, setLoadingMsg] = useState(0);
+  /** pola wypełnione z dokumentu (podświetlone do czasu edycji) */
+  const [prefilled, setPrefilled] = useState<ReadonlySet<string>>(() => new Set());
+  const capabilities = useCapabilities();
+
+  // Aktualne odpowiedzi dla asynchronicznego wypełniania z dokumentu (odczyt trwa kilkanaście sekund).
+  const valuesRef = useRef(values);
+  useEffect(() => {
+    valuesRef.current = values;
+  }, [values]);
 
   const headingRef = useRef<HTMLHeadingElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -125,6 +138,13 @@ function WizardInner({
 
   function setValue(id: string, v: string | boolean) {
     setValues((prev) => ({ ...prev, [id]: v }));
+    if (prefilled.has(id)) {
+      setPrefilled((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
     if (errors[id]) {
       setErrors((prev) => {
         const next = { ...prev };
@@ -132,6 +152,21 @@ function WizardInner({
         return next;
       });
     }
+  }
+
+  function handlePrefill(response: PrefillResponse): PrefillApplyResult {
+    const result = mergePrefill(sections, valuesRef.current, response.answers ?? {});
+    if (result.filled.length) {
+      valuesRef.current = result.values;
+      setValues(result.values);
+      setPrefilled((prev) => new Set([...prev, ...result.filled]));
+      setErrors((prev) => {
+        const next = { ...prev };
+        for (const id of result.filled) delete next[id];
+        return next;
+      });
+    }
+    return { filled: result.filled.length, skippedFilledByUser: result.skippedFilledByUser.length };
   }
 
   function goTo(nextStep: number) {
@@ -163,6 +198,7 @@ function WizardInner({
     if (!window.confirm("Wyczyścić wszystkie odpowiedzi i zacząć od nowa?")) return;
     clearStoredState(slug);
     setValues({});
+    setPrefilled(new Set());
     setErrors({});
     setSubmitError(null);
     goTo(0);
@@ -294,6 +330,11 @@ function WizardInner({
         </div>
 
         <form noValidate onSubmit={handleSubmit} className="px-5 py-6 sm:px-8 sm:py-8" aria-busy={submitting}>
+          {step === 0 && capabilities?.aiPrefill ? (
+            <div className="mb-8">
+              <PrefillPanel slug={slug} disabled={submitting} onPrefill={handlePrefill} />
+            </div>
+          ) : null}
           <h3
             ref={headingRef}
             tabIndex={-1}
@@ -311,6 +352,7 @@ function WizardInner({
                 question={q}
                 value={values[q.id]}
                 error={errors[q.id]}
+                prefilled={prefilled.has(q.id)}
                 onChange={(v) => setValue(q.id, v)}
               />
             ))}
@@ -331,10 +373,26 @@ function WizardInner({
           ) : null}
 
           {isLast ? (
-            <p className="mt-6 rounded-lg bg-navy-50 p-4 text-sm text-navy-900">
-              Za chwilę zobaczysz <strong>bezpłatny podgląd</strong> pisma. Pełny dokument (DOCX i PDF) z instrukcją
-              wysyłki odblokujesz za {formatPrice(priceGrosze)}.
-            </p>
+            <div className="mt-6 rounded-lg bg-navy-50 p-4 text-sm text-navy-900">
+              <p className="font-semibold">Co powstanie po kliknięciu „Przygotuj pismo”:</p>
+              <ul className="mt-2 space-y-1.5">
+                {[
+                  `Pismo „${templateName}” z Twoimi danymi, gotowe do podpisu`,
+                  "Podstawy prawne i struktura z szablonu – nie z AI",
+                  "Terminy wyliczone na podstawie podanych dat",
+                  "Instrukcja: gdzie i jak wysłać pismo",
+                ].map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-navy-700" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3">
+                Najpierw zobaczysz <strong>bezpłatny podgląd</strong>. Pełny dokument (DOCX i PDF) odblokujesz za{" "}
+                {formatPrice(priceGrosze)} albo kodem z pakietu.
+              </p>
+            </div>
           ) : null}
 
           <div className="mt-6 flex flex-col-reverse gap-3 border-t border-navy-100 pt-6 sm:flex-row sm:items-center sm:justify-between">

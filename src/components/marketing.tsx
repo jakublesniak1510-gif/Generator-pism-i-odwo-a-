@@ -92,24 +92,41 @@ export function TrustGrid() {
   );
 }
 
-export const PLANS = [
+export interface Plan {
+  name: string;
+  price: number;
+  soon: boolean;
+  features: string[];
+  /** przycisk w karcie (gdy plan dostępny) */
+  cta?: { href: string; label: string };
+}
+
+export const PLANS: Plan[] = [
   {
     name: "Pojedyncze pismo",
     price: PRICES.single,
     soon: false,
+    cta: { href: "/#pisma", label: "Wybierz pismo" },
     features: [
       "Pismo w formatach DOCX i PDF",
       "Instrukcja, gdzie i jak wysłać",
       "Wyliczone terminy dla Twojej sprawy",
       "Lista podstaw prawnych",
       "Bezpłatny podgląd przed zakupem",
+      "Edycja treści w przeglądarce",
     ],
   },
   {
     name: "Pakiet 5 pism",
     price: PRICES.pack5,
-    soon: true,
-    features: ["5 dowolnych pism do wykorzystania", "Wszystko, co w pojedynczym piśmie", "Ok. 11,80 zł za pismo"],
+    soon: false,
+    cta: { href: "/cennik#pakiet", label: "Kup pakiet" },
+    features: [
+      "5 dowolnych pism do wykorzystania",
+      "Jeden kod – działa 5 razy",
+      "Wszystko, co w pojedynczym piśmie",
+      `Ok. ${formatPrice(Math.round(PRICES.pack5 / 5))} za pismo`,
+    ],
   },
   {
     name: "Sprawdzenie przez prawnika",
@@ -167,14 +184,18 @@ export function PricingCards({ compact = false }: { compact?: boolean }) {
                 <span className="block rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-500">
                   Dostępne wkrótce
                 </span>
-              ) : (
+              ) : plan.cta ? (
                 <Link
-                  href="/#pisma"
-                  className="block rounded-lg bg-accent-400 px-4 py-2.5 text-center text-sm font-semibold text-navy-950 transition-colors hover:bg-accent-300"
+                  href={plan.cta.href}
+                  className={`block rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors ${
+                    featured
+                      ? "bg-accent-400 text-navy-950 hover:bg-accent-300"
+                      : "bg-navy-800 text-white hover:bg-navy-900"
+                  }`}
                 >
-                  Wybierz pismo
+                  {plan.cta.label}
                 </Link>
-              )}
+              ) : null}
             </div>
           </li>
         );
@@ -197,7 +218,7 @@ export const GENERAL_FAQ: FaqItem[] = [
   {
     question: "Ile kosztuje pismo i kiedy płacę?",
     answer:
-      "Pojedyncze pismo kosztuje 24,99 zł. Płacisz dopiero po zobaczeniu bezpłatnego podglądu – kartą, BLIK-iem lub szybkim przelewem.",
+      "Pojedyncze pismo kosztuje 24,99 zł. Płacisz dopiero po zobaczeniu bezpłatnego podglądu – kartą, BLIK-iem lub szybkim przelewem. Jeśli potrzebujesz kilku pism, taniej wyjdzie [pakiet 5 pism](/cennik#pakiet) za 59 zł.",
   },
   {
     question: "W jakim formacie dostanę dokument?",
