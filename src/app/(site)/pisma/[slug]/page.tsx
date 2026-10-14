@@ -148,7 +148,7 @@ export default async function TemplatePage({ params }: { params: Promise<Params>
                 </li>
                 <li className="flex gap-2">
                   <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-navy-700" />
-                  Podstawy prawne sprawdzone przez prawnika
+                  Podstawy prawne z aktualnych przepisów, nie z AI
                 </li>
               </ul>
               <div className="mt-4 flex items-baseline justify-between border-t border-navy-100 pt-4">

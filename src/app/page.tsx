@@ -73,7 +73,7 @@ export default function HomePage() {
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-navy-100">
               Wybierasz pismo, odpowiadasz na kilka pytań i pobierasz gotowy dokument DOCX/PDF z instrukcją
-              wysyłki. Podstawy prawne pochodzą z szablonów sprawdzonych przez prawnika.
+              wysyłki. Podstawy prawne pochodzą z szablonów opartych na aktualnych przepisach, nie są wymyślane przez AI.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link

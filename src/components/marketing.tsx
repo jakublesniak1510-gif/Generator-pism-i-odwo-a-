@@ -187,7 +187,7 @@ export const GENERAL_FAQ: FaqItem[] = [
   {
     question: "Czy pismo z PismoGotowe jest poradą prawną?",
     answer:
-      "Nie. Serwis jest narzędziem do tworzenia dokumentów na podstawie szablonów. Szablony opierają się na przepisach sprawdzonych przez prawnika, ale nie analizujemy indywidualnie Twojej sprawy. Jeśli sytuacja jest skomplikowana lub chodzi o wysoką kwotę, skonsultuj się z adwokatem, radcą prawnym albo rzecznikiem konsumentów.",
+      "Nie. Serwis jest narzędziem do tworzenia dokumentów na podstawie szablonów. Szablony opierają się na aktualnych przepisach i są regularnie aktualizowane, ale nie analizujemy indywidualnie Twojej sprawy. Jeśli sytuacja jest skomplikowana lub chodzi o wysoką kwotę, skonsultuj się z adwokatem, radcą prawnym albo rzecznikiem konsumentów.",
   },
   {
     question: "Czy AI wymyśla przepisy w moim piśmie?",
