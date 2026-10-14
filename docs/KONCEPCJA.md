@@ -63,6 +63,21 @@ Rachunek z propozycji (3 000 wejść × 3 % × 25 zł = 2 250 zł) jest realisty
 - [ ] Tydzień 3: Google Ads na 3 pisma, Analytics z celami (podgląd → płatność).
 - [ ] Tydzień 4: analiza konwersji, test ceny, kolejne pisma (reklamacja usługi, sprzeciw od nakazu zapłaty, wniosek o raty, RODO – żądanie usunięcia danych).
 
+## 7a. Fala 2 – co dodałem, żeby serwis był lepszy od istniejących wzorów
+
+Istniejące serwisy (darmowe wzory na portalach prawnych, generatory PDF z prostym formularzem, firmy odszkodowawcze za prowizję) mają trzy słabości: statyczny wzór bez rozgałęzień, brak pomocy przy przepisywaniu danych z dokumentu i zero wsparcia po pobraniu. Fala 2 odpowiada na każdą z nich.
+
+| Funkcja | Dlaczego to przewaga |
+|---|---|
+| **Wypełnianie formularza ze zdjęcia wezwania / umowy / paragonu** (Claude vision) | Największe tarcie w generatorach to przepisywanie numerów spraw, dat i kwot. Użytkownik robi zdjęcie telefonem, a formularz wypełnia się sam; dane są wyłącznie odczytywane z dokumentu, nigdy zgadywane. Plik nie jest zapisywany. |
+| **Edycja pisma w przeglądarce po zakupie** | Konkurencja daje tylko plik. U nas można poprawić zdanie i od razu pobrać nowy DOCX/PDF. |
+| **9 nowych pism** (razem 18) | Dobrane pod frazy o dużym wolumenie: odwołanie od decyzji ubezpieczyciela, reklamacja do banku (nieautoryzowana transakcja), zwrot prowizji po spłacie kredytu (Lexitor – generator sam liczy kwotę), sprzeciw od nakazu zapłaty (EPU), wypowiedzenie umowy o pracę (generator liczy okres wypowiedzenia), zwrot kaucji (z waloryzacją), reklamacja usługi, żądanie usunięcia danych RODO, reklamacja przesyłki kurierskiej. |
+| **Pakiet 5 pism i kody** | Pakiet 59 zł sprzedawany przez Stripe jako kod wielokrotnego użytku; te same kody służą do współpracy z kancelariami i rzecznikami (kody partnerskie) oraz do testów. |
+| **Link e-mailem** | Bez kont użytkownik gubi link; wysyłka linku (bez treści pisma) rozwiązuje reklamacje „nie mam dostępu”. |
+| **Baza wiedzy `/poradniki`** | 6 artykułów ewergrinowych (list polecony, liczenie terminów, co po odmowie, trwały nośnik, rzecznicy, jak pisać) – linkowanie wewnętrzne i ruch informacyjny, który konwertuje do generatora. |
+| **Open Graph dla każdego pisma, analityka opcjonalna** | Udostępnianie w grupach FB / Wykop daje ładną kartę; Plausible bez cookies, bez banera. |
+| **Retencja 90 dni, testy automatyczne** | Endpoint czyszczący dane (RODO) uruchamiany z crona; testy sprawdzają każdy szablon (render, walidacja, długość poradnika), więc dodawanie pism jest bezpieczne. |
+
 ## 8. Decyzje do podjęcia przez założyciela
 1. Nazwa i domena (robocza: „PismoGotowe”).
 2. Forma prawna sprzedaży (JDG / spółka) – potrzebna do regulaminu i Stripe.
