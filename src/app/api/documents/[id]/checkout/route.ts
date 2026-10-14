@@ -1,5 +1,5 @@
 import type { CheckoutResponse } from "@/lib/api-types";
-import { getDocument, verifyToken } from "@/lib/db";
+import { getDocument, recordConsent, verifyToken } from "@/lib/db";
 import { createCheckoutUrl, documentUrl } from "@/lib/payments/stripe";
 import { getTemplate } from "@/lib/templates";
 import { apiError, isUuid, json, readJson } from "../../../_lib/http";
@@ -24,6 +24,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (doc.status === "paid") {
     return json<CheckoutResponse>({ url: documentUrl(id, token as string) });
   }
+
+  // Art. 38 ust. 1 pkt 13 ustawy o prawach konsumenta: treść cyfrowa dostarczana od razu
+  // wymaga wyraźnej zgody konsumenta i przyjęcia do wiadomości utraty prawa odstąpienia.
+  const consent = (body as { consent?: unknown }).consent === true;
+  if (!consent) {
+    return apiError(400, "Aby kontynuować, zaznacz zgodę na natychmiastowe dostarczenie pisma.");
+  }
+  recordConsent(id);
 
   try {
     const url = await createCheckoutUrl(doc, template, token as string);

@@ -1,4 +1,5 @@
 import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 /**
  * Markdown z treści szablonów (poradniki, instrukcje). Surowy HTML jest ignorowany
@@ -69,7 +70,7 @@ export function Markdown({
   if (!children?.trim()) return null;
   return (
     <div className={`${className ?? "text-[0.975rem] text-gray-700"} [&>*:first-child]:mt-0 [&>*:last-child]:mb-0`}>
-      <ReactMarkdown components={document ? documentComponents : components}>{children}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={document ? documentComponents : components}>{children}</ReactMarkdown>
     </div>
   );
 }

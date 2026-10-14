@@ -36,7 +36,7 @@ export interface GetDocumentResponse extends CreateDocumentResponse {
   paidAt: string | null;
 }
 
-/** POST /api/documents/[id]/checkout  (body: { token: string }) */
+/** POST /api/documents/[id]/checkout  (body: { token: string; consent: true }) – `consent` to zgoda na natychmiastowe dostarczenie treści cyfrowej (art. 38 ust. 1 pkt 13 u.p.k.); bez niej 400 */
 export interface CheckoutResponse {
   /** adres, na który przeglądarka ma przekierować (Stripe Checkout lub od razu strona dokumentu w trybie dev) */
   url: string;

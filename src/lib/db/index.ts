@@ -49,10 +49,16 @@ function openDatabase(): Database.Database {
       token_hash TEXT NOT NULL,
       stripe_session_id TEXT,
       created_at TEXT NOT NULL,
-      paid_at TEXT
+      paid_at TEXT,
+      consent_at TEXT
     );
     CREATE INDEX IF NOT EXISTS idx_documents_stripe_session ON documents(stripe_session_id);
   `);
+  // migracja dla baz utworzonych przed dodaniem kolumny
+  const cols = db.prepare("PRAGMA table_info(documents)").all() as { name: string }[];
+  if (!cols.some((c) => c.name === "consent_at")) {
+    db.exec("ALTER TABLE documents ADD COLUMN consent_at TEXT");
+  }
   return db;
 }
 
@@ -151,6 +157,11 @@ export function markPaid(id: string): boolean {
     .prepare("UPDATE documents SET status = 'paid', paid_at = ? WHERE id = ? AND status != 'paid'")
     .run(new Date().toISOString(), id);
   return res.changes > 0;
+}
+
+/** Zapisuje moment wyrażenia zgody na dostarczenie treści cyfrowej przed upływem terminu odstąpienia. */
+export function recordConsent(id: string): void {
+  getDb().prepare("UPDATE documents SET consent_at = COALESCE(consent_at, ?) WHERE id = ?").run(new Date().toISOString(), id);
 }
 
 export function setStripeSession(id: string, sessionId: string): void {

@@ -167,15 +167,20 @@ function DocumentReady({
     error: null,
   });
   const [copied, setCopied] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   async function startCheckout() {
     if (checkout.loading) return;
+    if (!consent) {
+      setCheckout({ loading: false, error: "Zaznacz zgodę na natychmiastowe dostarczenie pisma, aby przejść do płatności." });
+      return;
+    }
     setCheckout({ loading: true, error: null });
     try {
       const res = await fetch(`/api/documents/${encodeURIComponent(id)}/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ token, consent: true }),
       });
       let body: unknown = null;
       try {
@@ -220,6 +225,25 @@ function DocumentReady({
     n > 0
       ? `${pluralPl(n, "Pozostały", "Pozostałe", "Pozostałych")} ${n} ${pluralPl(n, "akapit", "akapity", "akapitów")}, instrukcja wysyłki i pobieranie DOCX/PDF po odblokowaniu – ${price}`
       : `Instrukcja wysyłki i pobieranie DOCX/PDF po odblokowaniu – ${price}`;
+
+  const consentBox = (
+    <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-lg border border-navy-100 bg-navy-50/60 p-3 text-xs leading-relaxed text-gray-700">
+      <input
+        type="checkbox"
+        checked={consent}
+        onChange={(e) => setConsent(e.target.checked)}
+        className="mt-0.5 h-4 w-4 shrink-0 accent-navy-800"
+      />
+      <span>
+        Żądam natychmiastowego dostarczenia pisma (treści cyfrowej) i przyjmuję do wiadomości, że po jego
+        udostępnieniu tracę prawo do odstąpienia od umowy w terminie 14 dni. Akceptuję{" "}
+        <Link href="/regulamin" className="underline underline-offset-2">
+          regulamin
+        </Link>
+        .
+      </span>
+    </label>
+  );
 
   const unlockButton = (
     <button
@@ -316,6 +340,7 @@ function DocumentReady({
                     <LockIcon className="h-5 w-5" />
                   </span>
                   <p className="mt-3 text-sm font-medium leading-relaxed text-navy-900">{lockedText}</p>
+                  <div className="text-left">{consentBox}</div>
                   <div className="mt-4">{unlockButton}</div>
                   {checkoutError}
                 </div>
@@ -368,7 +393,8 @@ function DocumentReady({
                     </li>
                   ))}
                 </ul>
-                <div className="mt-5">{unlockButton}</div>
+                {consentBox}
+                <div className="mt-4">{unlockButton}</div>
                 {checkoutError}
                 <p className="mt-3 text-xs leading-relaxed text-gray-500">
                   Płatność kartą, BLIK lub szybkim przelewem. Treść cyfrowa dostarczana natychmiast po płatności –
