@@ -2,7 +2,10 @@
 
 Serwis, w którym użytkownik wybiera rodzaj pisma (reklamacja, odwołanie od opłaty, wypowiedzenie umowy…), odpowiada na kwestionariusz i pobiera gotowe pismo DOCX/PDF razem z instrukcją, gdzie i jak je wysłać.
 
+**18 pism** (reklamacje, odwołania, wypowiedzenia, wezwania, sprzeciw od nakazu, RODO…), wypełnianie formularza ze zdjęcia dokumentu, edycja pisma w przeglądarce, pakiet 5 pism z kodami, baza wiedzy.
+
 - Koncepcja biznesowa i decyzje: [`docs/KONCEPCJA.md`](docs/KONCEPCJA.md)
+- Wdrożenie produkcyjne krok po kroku: [`docs/WDROZENIE.md`](docs/WDROZENIE.md)
 - Architektura i kontrakt API: [`docs/ARCHITEKTURA.md`](docs/ARCHITEKTURA.md)
 - Przepisy do weryfikacji przez prawnika: [`docs/legal-review/`](docs/legal-review/)
 
@@ -17,7 +20,9 @@ npm run dev              # http://localhost:3000
 Produkcja: ustaw `PAYMENTS_MODE=stripe`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (endpoint `/api/webhooks/stripe`, zdarzenie `checkout.session.completed`), `NEXT_PUBLIC_SITE_URL`, `DOCUMENT_TOKEN_SECRET` (długi losowy ciąg) i opcjonalnie `ANTHROPIC_API_KEY`. Baza SQLite (`DATABASE_PATH`) wymaga trwałego dysku.
 
 ```bash
+npm test                 # testy jednostkowe + test każdego szablonu
 npm run build && npm start
+node scripts/create-code.mjs --uses 5 --kind promo   # kod partnerski / testowy
 ```
 
 ## Dodawanie nowego pisma
