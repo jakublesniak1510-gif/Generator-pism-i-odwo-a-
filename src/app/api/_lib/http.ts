@@ -40,11 +40,14 @@ const RATE_WINDOW_MS = 60 * 60 * 1000;
 const globalForRate = globalThis as unknown as { __pismaRateLimit?: Map<string, number[]> };
 const hits: Map<string, number[]> = (globalForRate.__pismaRateLimit ??= new Map());
 
-/** Rejestruje żądanie. Zwraca liczbę sekund do odblokowania albo 0, gdy limit nie został przekroczony. */
-export function rateLimit(key: string, now = Date.now()): number {
+/**
+ * Rejestruje żądanie. Zwraca liczbę sekund do odblokowania albo 0, gdy limit nie został przekroczony.
+ * `limit` – maksymalna liczba żądań na godzinę dla danego klucza (domyślnie 20).
+ */
+export function rateLimit(key: string, limit: number = RATE_LIMIT, now = Date.now()): number {
   const from = now - RATE_WINDOW_MS;
   const list = (hits.get(key) ?? []).filter((t) => t > from);
-  if (list.length >= RATE_LIMIT) {
+  if (list.length >= limit) {
     hits.set(key, list);
     return Math.max(1, Math.ceil((list[0] + RATE_WINDOW_MS - now) / 1000));
   }
@@ -55,4 +58,16 @@ export function rateLimit(key: string, now = Date.now()): number {
     for (const [k, v] of hits) if (!v.some((t) => t > from)) hits.delete(k);
   }
   return 0;
+}
+
+/** Odpowiedź 429 z nagłówkiem Retry-After. */
+export function tooManyRequests(retryAfter: number, message = "Zbyt wiele prób w krótkim czasie. Spróbuj ponownie później."): Response {
+  return apiError(429, message, undefined, { "Retry-After": String(retryAfter) });
+}
+
+/** Odczytuje `token` z body JSON (lub null). */
+export function bodyToken(body: unknown): string | null {
+  return typeof body === "object" && body !== null && typeof (body as { token?: unknown }).token === "string"
+    ? (body as { token: string }).token
+    : null;
 }

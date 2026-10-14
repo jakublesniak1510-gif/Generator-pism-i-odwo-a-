@@ -4,15 +4,15 @@ export type ValidationResult =
   | { ok: true; answers: Answers }
   | { ok: false; fieldErrors: Record<string, string> };
 
-const DEFAULT_MAX_LENGTH: Partial<Record<Question["type"], number>> = {
+export const DEFAULT_MAX_LENGTH: Partial<Record<Question["type"], number>> = {
   text: 200,
   textarea: 2000,
   email: 254,
   phone: 30,
 };
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const PHONE_RE = /^\+?[0-9\s\-()]+$/;
+export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+export const PHONE_RE = /^\+?[0-9\s\-()]+$/;
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const NUMBER_RE = /^-?\d+(\.\d+)?$/;
 
@@ -65,7 +65,7 @@ function toBoolean(v: unknown): boolean | null {
   return null;
 }
 
-function parseNumber(v: unknown): number | null {
+export function parseNumber(v: unknown): number | null {
   if (typeof v === "number") return Number.isFinite(v) ? v : null;
   if (typeof v !== "string") return null;
   const s = v.replace(/[\s ]/g, "").replace(",", ".");
@@ -74,7 +74,7 @@ function parseNumber(v: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-function isValidIsoDate(s: string): boolean {
+export function isValidIsoDate(s: string): boolean {
   const m = ISO_DATE_RE.exec(s);
   if (!m) return false;
   const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];

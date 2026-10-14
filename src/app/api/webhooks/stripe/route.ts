@@ -9,7 +9,7 @@ export async function POST(req: Request): Promise<Response> {
   const signature = req.headers.get("stripe-signature");
 
   try {
-    const result = handleStripeWebhook(rawBody, signature);
+    const result = await handleStripeWebhook(rawBody, signature);
     return json({ received: true, handled: result.handled });
   } catch (err) {
     if (err instanceof WebhookSignatureError) {

@@ -101,7 +101,7 @@ export async function draftWithAi(template: LetterTemplate, answers: Answers): P
   try {
     const response = await client.messages.parse({
       model: process.env.AI_MODEL ?? "claude-opus-5-5",
-      max_tokens: 4000,
+      max_tokens: 8000,
       output_config: { format: zodOutputFormat(AiDraftSchema), effort: "medium" },
       system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
       messages: [{ role: "user", content: userPrompt }],
